@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>H+O Deal Entry Form</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New Proposal Entry</h1>
+            <p>Enter details for a new project proposal in Hubspot</p>
+        </div>
+
+        <form id="dealForm">
+            
+            <!-- Deal Information -->
+            <div class="form-section no-border">
+                <h2>Deal Information</h2>
+                
+                <div class="form-group">
+                    <label for="dealName">Deal Name *</label>
+                    <input 
+                        type="text" 
+                        id="dealName" 
+                        name="dealName"
+                        required
+                    >
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="pipeline">Pipeline *</label>
+                        <select id="pipeline" name="pipeline" required>
+                            <option value="">Select pipeline...</option>
+                            <option value="small">Deals < $100k</option>
+                            <option value="large">Deals > $100k</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dealStage">Deal Stage *</label>
+                        <select id="dealStage" name="dealStage" required>
+                            <option value="">Select stage...</option>
+                            <option value="discovery">Discovery</option>
+                            <option value="rfp">RFP</option>
+                            <option value="proposal_sent">Proposal Sent</option>
+                            <option value="hiro">HIRO</option>
+                            <option value="closed_won">Closed Won</option>
+                            <option value="closed_lost">Closed Lost</option>
+                            <option value="unknown_timeline">Unknown Timeline</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Deal Owner Search -->
+                <div class="form-group">
+                    <label for="dealOwnerSearch">Deal Owner *</label>
+                    <input 
+                        type="text" 
+                        id="dealOwnerSearch" 
+                        name="dealOwnerSearch"
+                        placeholder="Your name"
+                        autocomplete="off"
+                        required
+                    >
+                    <div id="ownerResults" class="autocomplete-results"></div>
+                    <input type="hidden" id="dealOwnerId" name="dealOwnerId">
+                </div>
+
+                <div class="form-group">
+                    <label for="dealDescription">Deal Description</label>
+                    <textarea 
+                        id="dealDescription" 
+                        name="dealDescription"
+                        rows="4"
+                    ></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Proposal Number</label>
+                    <input 
+                        type="text" 
+                        id="proposalNumber" 
+                        name="proposalNumber"
+                        placeholder="Will be auto-assigned"
+                        disabled
+                        class="disabled-field"
+                    >
+                    <small class="helper-text">This will be automatically generated from the Google Pricing Sheet</small>
+                </div>
+            </div>
+
+            <!-- PROJECT LOCATION -->
+            <div class="form-section no-border">
+
+                <div class="form-group">
+                    <label for="dealStreet">Street Address</label>
+                    <input 
+                        type="text" 
+                        id="dealStreet" 
+                        name="dealStreet"
+                        placeholder="123 Main Street"
+                    >
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dealCity">City</label>
+                        <input 
+                            type="text" 
+                            id="dealCity" 
+                            name="dealCity"
+                            placeholder="Boston"
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dealState">State</label>
+                        <select id="dealState" name="dealState">
+                            <option value="">Select state...</option>
+                            <option value="MA">Massachusetts</option>
+                            <option value="NH">New Hampshire</option>
+                            <option value="ME">Maine</option>
+                            <option value="VT">Vermont</option>
+                            <option value="RI">Rhode Island</option>
+                            <option value="CT">Connecticut</option>
+                            <option value="NY">New York</option>
+                            <option value="AL">Alabama</option>
+                            <option value="AK">Alaska</option>
+                            <option value="AZ">Arizona</option>
+                            <option value="AR">Arkansas</option>
+                            <option value="CA">California</option>
+                            <option value="CO">Colorado</option>
+                            <option value="DE">Delaware</option>
+                            <option value="FL">Florida</option>
+                            <option value="GA">Georgia</option>
+                            <option value="HI">Hawaii</option>
+                            <option value="ID">Idaho</option>
+                            <option value="IL">Illinois</option>
+                            <option value="IN">Indiana</option>
+                            <option value="IA">Iowa</option>
+                            <option value="KS">Kansas</option>
+                            <option value="KY">Kentucky</option>
+                            <option value="LA">Louisiana</option>
+                            <option value="MD">Maryland</option>
+                            <option value="MI">Michigan</option>
+                            <option value="MN">Minnesota</option>
+                            <option value="MS">Mississippi</option>
+                            <option value="MO">Missouri</option>
+                            <option value="MT">Montana</option>
+                            <option value="NE">Nebraska</option>
+                            <option value="NV">Nevada</option>
+                            <option value="NJ">New Jersey</option>
+                            <option value="NM">New Mexico</option>
+                            <option value="NC">North Carolina</option>
+                            <option value="ND">North Dakota</option>
+                            <option value="OH">Ohio</option>
+                            <option value="OK">Oklahoma</option>
+                            <option value="OR">Oregon</option>
+                            <option value="PA">Pennsylvania</option>
+                            <option value="SC">South Carolina</option>
+                            <option value="SD">South Dakota</option>
+                            <option value="TN">Tennessee</option>
+                            <option value="TX">Texas</option>
+                            <option value="UT">Utah</option>
+                            <option value="VA">Virginia</option>
+                            <option value="WA">Washington</option>
+                            <option value="WV">West Virginia</option>
+                            <option value="WI">Wisconsin</option>
+                            <option value="WY">Wyoming</option>
+                            <option value="DC">Washington DC</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dealZip">Zip Code</label>
+                        <input 
+                            type="text" 
+                            id="dealZip" 
+                            name="dealZip"
+                            placeholder="02101"
+                            pattern="[0-9]{5}"
+                        >
+                    </div>
+                </div>
+            </div>
+
+            <!-- FINANCIAL & PROJECT DETAILS -->
+            <div class="form-section">
+                            
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="amount">Amount ($) *</label>
+                        <input 
+                            type="number" 
+                            id="amount" 
+                            name="amount"
+                            placeholder="75,000"
+                            min="0"
+                            step="100"
+                            required
+                        >
+                    </div>
+
+                    <div class="form-group">
+                        <label for="framedArea">Framed Area (SF)</label>
+                        <input 
+                            type="number" 
+                            id="framedArea" 
+                            name="framedArea"
+                            placeholder="100,000"
+                            min="0"
+                        >
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dealType">Deal Type *</label>
+                        <select id="dealType" name="dealType" required>
+                            <option value="">Select type...</option>
+                            <option value="new_business">New Business</option>
+                            <option value="existing_business">Existing Business</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newRepeatClient">New/Repeat Client *</label>
+                        <select id="newRepeatClient" name="newRepeatClient" required>
+                            <option value="">Select...</option>
+                            <option value="new_first">New Client (First Opportunity)</option>
+                            <option value="new_additional">New Client (Additional Opportunity)</option>
+                            <option value="repeat">Repeat Client</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="marketType">Market Type *</label>
+                    <select id="marketType" name="marketType" required>
+                        <option value="">Select market type...</option>
+                        <option value="apartment">Apartment</option>
+                        <option value="condo">Condo</option>
+                        <option value="retail">Retail</option>
+                        <option value="warehouse">Warehouse</option>
+                        <option value="office">Office</option>
+                        <option value="educational">Educational</option>
+                        <option value="mixed_use">Mixed-Use</option>
+                        <option value="hospitality">Hospitality</option>
+                        <option value="affordable_housing">Affordable Housing</option>
+                        <option value="senior_living">Senior Living</option>
+                        <option value="student_housing">Student Housing</option>
+                        <option value="single_family">Single-Family</option>
+                        <option value="lab">Lab</option>
+                        <option value="commercial">Commercial</option>
+                        <option value="religious">Religious</option>
+                        <option value="gmp">GMP</option>
+                        <option value="cultivation">Cultivation/Dispensary</option>
+                        <option value="self_storage">Self Storage</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="restaurant">Restaurant</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- RFP & OPPORTUNITY DETAILS -->
+            <div class="form-section">
+                <h2>RFP & Opportunity Details</h2>
+                
+                <div class="form-group">
+                    <label for="developmentStatus">Development Status at RFP</label>
+                    <small class="helper-text">Hold Ctrl to select multiple</small>
+                    <select id="developmentStatus" name="developmentStatus" multiple size="6">
+                        <option value="entitled">Entitled</option>
+                        <option value="zba_approved">ZBA Approved</option>
+                        <option value="permitted">Permitted</option>
+                        <option value="equity_secured">Equity Secured</option>
+                        <option value="debt_secured">Debt Secured</option>
+                        <option value="spec_build">Spec Build (where applicable)</option>
+                        <option value="tenant_secured">Tenant Secured (where applicable)</option>
+                        <option value="development_as_of_right">Development As of Right</option>
+                        <option value="prospective_acquisition">Developer prospective acquisition</option>
+                        <option value="tenant_fitout">Tenant Fit Out</option>
+                    </select>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="rfpDetail">RFP Detail</label>
+                        <select id="rfpDetail" name="rfpDetail">
+                            <option value="">Select...</option>
+                            <option value="competitive_architect_deal">Competitive (Architect's deal)</option>
+                            <option value="competitive_architect_competing">Competitive (Architect competing for deal)</option>
+                            <option value="negotiated">Negotiated</option>
+                            <option value="design_build_negotiated">Design-Build (Negotiated)</option>
+                            <option value="design_build_competing">Design-Build (Competing for deal)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="likelihoodToClose">Likelihood to Close</label>
+                        <select id="likelihoodToClose" name="likelihoodToClose">
+                            <option value="">Select...</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- COMPANY & CONTACT INFORMATION -->
+<div class="form-section no-border">
+    <h2>Company & Contact Information</h2>
+    
+    <!-- Primary Company Search -->
+    <div class="form-group">
+        <label for="companySearch">Primary Company *</label>
+        <input 
+            type="text" 
+            id="companySearch" 
+            name="companySearch"
+            autocomplete="off"
+            required
+        >
+        <!-- Additional Companies Container -->
+    <div id="additionalCompaniesContainer"></div>
+    <button type="button" class="btn-link" id="addMoreCompaniesBtn">+ Add More Companies</button>
+
+        <div id="companyResults" class="autocomplete-results"></div>
+        <input type="hidden" id="companyId" name="companyId">
+        <button type="button" class="btn-link" id="createNewCompanyBtn">+ Create New Company</button>
+    </div>
+
+    <!-- New Company Fields (Hidden by Default) -->
+    <div id="newCompanyFields" class="nested-fields" style="display: none;">
+        <h3>New Company Details</h3>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newCompanyName">Company Name *</label>
+                <input type="text" id="newCompanyName" name="newCompanyName">
+            </div>
+            <div class="form-group">
+                <label for="newCompanyDomain">Website</label>
+                <input type="text" id="newCompanyDomain" name="newCompanyDomain">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newCompanyPhone">Phone</label>
+                <input type="tel" id="newCompanyPhone" name="newCompanyPhone">
+            </div>
+            <div class="form-group">
+                <label for="newCompanyIndustry">Industry</label>
+                <input type="text" id="newCompanyIndustry" name="newCompanyIndustry">
+            </div>
+        </div>
+        
+        <!-- Company Owner Search -->
+        <div class="form-group">
+            <label for="newCompanyOwnerSearch">Company Owner *</label>
+            <input 
+                type="text" 
+                id="newCompanyOwnerSearch" 
+                name="newCompanyOwnerSearch"
+                autocomplete="off"
+            >
+            <div id="companyOwnerResults" class="autocomplete-results"></div>
+            <input type="hidden" id="newCompanyOwnerId" name="newCompanyOwnerId">
+            <small class="helper-text">Selected: <span id="selectedCompanyOwner">None</span></small>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newCompanyLifecycle">Lifecycle Stage *</label>
+                <select id="newCompanyLifecycle" name="newCompanyLifecycle">
+                    <option value="">Select lifecycle stage...</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="lead">Lead</option>
+                    <option value="marketingqualifiedlead">Marketing Qualified Lead</option>
+                    <option value="salesqualifiedlead">Sales Qualified Lead</option>
+                    <option value="opportunity">Opportunity</option>
+                    <option value="customer">Customer</option>
+                    <option value="evangelist">Evangelist</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="newCompanyType">Company Type *</label>
+                <select id="newCompanyType" name="newCompanyType">
+                    <option value="">Select company type...</option>
+                    <option value="architect">Architect</option>
+                    <option value="developer">Developer</option>
+                    <option value="gc">General Contractor (GC)</option>
+                    <option value="owners_rep">Owner's Rep</option>
+                    <option value="steel_sub">Steel Subcontractor</option>
+                    <option value="concrete_sub">Concrete Subcontractor</option>
+                    <option value="precaster">Precaster</option>
+                    <option value="mass_timber_supplier">Mass Timber Supplier</option>
+                    <option value="mass_timber_contractor">Mass Timber Contractor</option>
+                    <option value="civil_engineering">Civil Engineering</option>
+                    <option value="mep_engineering">MEP Engineering</option>
+                    <option value="code_consultant">Code Consultant</option>
+                    <option value="business_consultant">Business Consultant</option>
+                    <option value="equity_partner">Equity Partner</option>
+                    <option value="real_estate_broker">Real Estate Broker</option>
+                    <option value="geotechnical">Geotechnical Engineering</option>
+                    <option value="life_science">Life Science Company</option>
+                    <option value="design_build_sub">Design-Build Subcontractor</option>
+                    <option value="education">Education</option>
+                    <option value="landscape_architect">Landscape Architect</option>
+                    <option value="municipality">Municipality</option>
+                    <option value="corporation">Corporation</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="newCompanyMarketSectors">Market Sectors *</label>
+            <small class="helper-text">Hold Ctrl (or Cmd) to select multiple</small>
+            <select id="newCompanyMarketSectors" name="newCompanyMarketSectors" multiple size="8">
+                <option value="market_rate_multifamily">Market Rate Multifamily</option>
+                <option value="affordable_housing">Affordable Housing</option>
+                <option value="life_science">Life Science</option>
+                <option value="education">Education</option>
+                <option value="public">Public</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="retail">Retail</option>
+                <option value="mixed_use">Mixed-use</option>
+                <option value="industrial">Industrial</option>
+                <option value="student_housing">Student Housing</option>
+                <option value="senior_living">Senior Living</option>
+                <option value="single_family">Single Family</option>
+                <option value="religious">Religious</option>
+                <option value="healthcare">Healthcare</option>
+                <option value="office">Office</option>
+                <option value="restoration">Restoration</option>
+                <option value="cultivation">Cultivation</option>
+                <option value="hospitality">Hospitality</option>
+            </select>
+        </div>
+    </div>
+
+    
+    <!-- Primary Contact Search -->
+    <div class="form-group" style="margin-top: 30px;">
+        <label for="contactSearch">Primary Contact *</label>
+        <input 
+            type="text" 
+            id="contactSearch" 
+            name="contactSearch"
+            autocomplete="off"
+            required
+        >
+        <!-- Additional Contacts Container -->
+    <div id="additionalContactsContainer"></div>
+    <button type="button" class="btn-link" id="addMoreContactsBtn">+ Add More Contacts</button>
+    
+        <div id="contactResults" class="autocomplete-results"></div>
+        <input type="hidden" id="contactId" name="contactId">
+        <button type="button" class="btn-link" id="createNewContactBtn">+ Create New Contact</button>
+    </div>
+
+    <!-- New Contact Fields (Hidden by Default) -->
+    <div id="newContactFields" class="nested-fields" style="display: none;">
+        <h3>New Contact Details</h3>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newContactFirstName">First Name *</label>
+                <input type="text" id="newContactFirstName" name="newContactFirstName">
+            </div>
+            <div class="form-group">
+                <label for="newContactLastName">Last Name *</label>
+                <input type="text" id="newContactLastName" name="newContactLastName">
+            </div>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newContactEmail">Email *</label>
+                <input type="email" id="newContactEmail" name="newContactEmail">
+            </div>
+            <div class="form-group">
+                <label for="newContactPhone">Phone</label>
+                <input type="tel" id="newContactPhone" name="newContactPhone">
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="newContactTitle">Job Title</label>
+            <input type="text" id="newContactTitle" name="newContactTitle">
+        </div>
+        
+        <!-- Contact Owner Search -->
+        <div class="form-group">
+            <label for="newContactOwnerSearch">Contact Owner *</label>
+            <input 
+                type="text" 
+                id="newContactOwnerSearch" 
+                name="newContactOwnerSearch"
+                autocomplete="off"
+            >
+            <div id="contactOwnerResults" class="autocomplete-results"></div>
+            <input type="hidden" id="newContactOwnerId" name="newContactOwnerId">
+            <small class="helper-text">Selected: <span id="selectedContactOwner">None</span></small>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group">
+                <label for="newContactLifecycle">Lifecycle Stage *</label>
+                <select id="newContactLifecycle" name="newContactLifecycle">
+                    <option value="">Select lifecycle stage...</option>
+                    <option value="subscriber">Subscriber</option>
+                    <option value="lead">Lead</option>
+                    <option value="marketingqualifiedlead">Marketing Qualified Lead</option>
+                    <option value="salesqualifiedlead">Sales Qualified Lead</option>
+                    <option value="opportunity">Opportunity</option>
+                    <option value="customer">Customer</option>
+                    <option value="evangelist">Evangelist</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="newContactLeadStatus">Lead Status *</label>
+                <select id="newContactLeadStatus" name="newContactLeadStatus">
+                    <option value="">Select lead status...</option>
+                    <option value="new">New</option>
+                    <option value="open">Open</option>
+                    <option value="in_progress">In progress</option>
+                    <option value="open_deal">Open deal</option>
+                    <option value="unqualified">Unqualified</option>
+                    <option value="attempt_to_contact">Attempt to contact</option>
+                    <option value="connected">Connected</option>
+                    <option value="bad_timing">Bad timing</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="newContactType">Contact Type *</label>
+            <small class="helper-text">Hold Ctrl (or Cmd) to select multiple</small>
+            <select id="newContactType" name="newContactType" multiple size="10">
+                <option value="architect">Architect</option>
+                <option value="developer">Developer</option>
+                <option value="general_contractor">General Contractor</option>
+                <option value="industry_influencer">Industry Influencer</option>
+                <option value="owners_rep">Owner's Rep</option>
+                <option value="design_build_contractor">Design-Build Contractor</option>
+                <option value="business_consultant">Business Consultant</option>
+                <option value="fractional_services">Fractional Services</option>
+                <option value="code_consultant">Code Consultant</option>
+                <option value="broker">Broker</option>
+                <option value="analyst">Analyst</option>
+                <option value="mep_consultant">MEP Consultant</option>
+                <option value="geotechnical_consultant">Geotechnical Consultant</option>
+                <option value="civil_engineer">Civil Engineer</option>
+                <option value="steel_subcontractor">Steel Subcontractor</option>
+                <option value="concrete_contractor">Concrete Contractor</option>
+                <option value="wood_subcontractor">Wood Subcontractor</option>
+                <option value="subcontractor_other">Subcontractor (Other)</option>
+                <option value="mass_timber_supplier">Mass Timber Supplier</option>
+                <option value="mass_timber_subcontractor">Mass Timber Subcontractor</option>
+                <option value="precaster">Precaster</option>
+                <option value="university_affiliate">University Affiliate</option>
+                <option value="student">Student</option>
+                <option value="equity_partner">Equity Partner</option>
+                <option value="bank_debt_partner">Bank/Debt Partner</option>
+                <option value="capital_markets">Capital Markets</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="newContactPodcast">Podcast Relationship</label>
+            <select id="newContactPodcast" name="newContactPodcast">
+                <option value="">Select...</option>
+                <option value="prospect">Prospect</option>
+                <option value="interested">Interested</option>
+                <option value="scheduled">Scheduled</option>
+                <option value="guest">Guest</option>
+                <option value="repeat_guest">Repeat Guest</option>
+            </select>
+        </div>
+    </div>
+
+</div>
+
+            <!-- OPTIONS -->
+            <div class="form-section with-top-border no-border">
+                <h2>Additional Options</h2>
+                
+                <div class="checkbox-group">
+                    <label>
+                        <input type="checkbox" id="createProposal" name="createProposal">
+                        <span>Create PandaDoc proposal automatically</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- SUBMIT -->
+            <div class="form-actions">
+                <button type="submit" class="btn-primary" id="submitBtn">
+                    Create Deal
+                </button>
+            </div>
+
+            <div id="statusMessage" class="status-message"></div>
+        </form>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
