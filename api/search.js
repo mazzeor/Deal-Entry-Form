@@ -29,7 +29,7 @@ export default async function handler(req, res) {
 
     // Company search
     if (action === 'search_companies') {
-      hubspotUrl = 'https://api.hubapi.com/crm/v3/objects/companies/search';
+      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/companies/search?hapikey=${HUBSPOT_API_KEY}`;
       searchBody = {
         filterGroups: [{
           filters: [{
@@ -44,7 +44,7 @@ export default async function handler(req, res) {
     } 
     // Contact search
     else if (action === 'search_contacts') {
-      hubspotUrl = 'https://api.hubapi.com/crm/v3/objects/contacts/search';
+      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/contacts/search?hapikey=${HUBSPOT_API_KEY}`;
       searchBody = {
         filterGroups: [{
           filters: [{
@@ -59,8 +59,8 @@ export default async function handler(req, res) {
     }
     // Owner search
     else if (action === 'search_owners') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/owners?limit=100`;
-      searchBody = null; // Owners use GET, no body
+      hubspotUrl = `https://api.hubapi.com/crm/v3/owners?hapikey=${HUBSPOT_API_KEY}&limit=100`;
+      searchBody = null;
     }
     else {
       return res.status(400).json({ error: 'Invalid action' });
@@ -70,7 +70,6 @@ export default async function handler(req, res) {
     const response = await fetch(hubspotUrl, {
       method: action === 'search_owners' ? 'GET' : 'POST',
       headers: {
-        'Authorization': `Bearer ${HUBSPOT_API_KEY}`,
         'Content-Type': 'application/json'
       },
       body: searchBody ? JSON.stringify(searchBody) : undefined
