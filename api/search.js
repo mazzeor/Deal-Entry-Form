@@ -8,7 +8,7 @@ export default async function handler(req, res) {
   }
 
   // Get the search type and query from the request
-  const { type, query } = req.body;
+  const { action, query } = req.body;
 
   // Your HubSpot API key (we'll add this in a moment)
   const HUBSPOT_API_KEY = process.env.HUBSPOT_API_KEY;
@@ -20,20 +20,20 @@ export default async function handler(req, res) {
   try {
     let hubspotUrl;
 
-    // Determine which HubSpot endpoint to search
-    if (type === 'company') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/companies/search`;
-    } else if (type === 'contact') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/contacts/search`;
-    } else if (type === 'owner') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/owners`;
-    } else {
-      return res.status(400).json({ error: 'Invalid search type' });
-    }
+// Determine which HubSpot endpoint to search
+if (action === 'search_companies') {
+  hubspotUrl = `https://api.hubapi.com/crm/v3/objects/companies/search`;
+} else if (action === 'search_contacts') {
+  hubspotUrl = `https://api.hubapi.com/crm/v3/objects/contacts/search`;
+} else if (action === 'search_owners') {
+  hubspotUrl = `https://api.hubapi.com/crm/v3/owners`;
+} else {
+  return res.status(400).json({ error: 'Invalid search action' });
+}
 
     // Search HubSpot
     const response = await fetch(hubspotUrl, {
-      method: type === 'owner' ? 'GET' : 'POST',
+      method: action === 'search_owners' ? 'GET' : 'POST',
       headers: {
         'Authorization': `Bearer ${HUBSPOT_API_KEY}`,
         'Content-Type': 'application/json'
@@ -46,7 +46,7 @@ export default async function handler(req, res) {
             value: query
           }]
         }],
-        properties: type === 'company' 
+        properties: action === 'search_companies' 
           ? ['name', 'domain'] 
           : ['firstname', 'lastname', 'email'],
         limit: 10
