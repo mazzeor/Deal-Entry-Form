@@ -25,70 +25,138 @@ export default async function handler(req, res) {
 
   try {
     let hubspotUrl;
-    let searchBody;
+    let response;
 
-    // Company search
+    // Company search - using v2 API
     if (action === 'search_companies') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/companies/search?hapikey=${HUBSPOT_API_KEY}`;
-      searchBody = {
-        filterGroups: [{
-          filters: [{
-            propertyName: 'name',
-            operator: 'CONTAINS_TOKEN',
-            value: query
-          }]
-        }],
-        properties: ['name', 'domain', 'city', 'state'],
-        limit: 10
-      };
+      hubspotUrl = `https://api.hubapi.com/companies/v2/companies/paged?hapikey=${HUBSPOT_API_KEY}&properties=name&properties=domain&properties=city&properties=state&limit=100`;
+      
+      response = await fetch(hubspotUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('HubSpot API error:', response.status, errorText);
+        return res.status(response.status).json({ 
+          error: 'HubSpot API error',
+          details: errorText,
+          status: response.status
+        });
+      }
+
+      const data = await response.json();
+      
+      // Filter companies by query on the server side
+      const filteredCompanies = data.companies
+        .filter(company => {
+          const name = company.properties.name?.value || '';
+          return name.toLowerCase().includes(query.toLowerCase());
+        })
+        .slice(0, 10)
+        .map(company => ({
+          id: company.companyId,
+          properties: {
+            name: company.properties.name?.value || '',
+            domain: company.properties.domain?.value || '',
+            city: company.properties.city?.value || '',
+            state: company.properties.state?.value || ''
+          }
+        }));
+
+      return res.status(200).json({ 
+        results: filteredCompanies 
+      });
     } 
-    // Contact search
+    
+    // Contact search - using v1 API
     else if (action === 'search_contacts') {
-      hubspotUrl = `https://api.hubapi.com/crm/v3/objects/contacts/search?hapikey=${HUBSPOT_API_KEY}`;
-      searchBody = {
-        filterGroups: [{
-          filters: [{
-            propertyName: 'email',
-            operator: 'CONTAINS_TOKEN',
-            value: query
-          }]
-        }],
-        properties: ['firstname', 'lastname', 'email'],
-        limit: 10
-      };
+      hubspotUrl = `https://api.hubapi.com/contacts/v1/lists/all/contacts/all?hapikey=${HUBSPOT_API_KEY}&property=firstname&property=lastname&property=email&count=100`;
+      
+      response = await fetch(hubspotUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('HubSpot API error:', response.status, errorText);
+        return res.status(response.status).json({ 
+          error: 'HubSpot API error',
+          details: errorText,
+          status: response.status
+        });
+      }
+
+      const data = await response.json();
+      
+      // Filter contacts by query
+      const filteredContacts = data.contacts
+        .filter(contact => {
+          const email = contact.properties.email?.value || '';
+          const firstname = contact.properties.firstname?.value || '';
+          const lastname = contact.properties.lastname?.value || '';
+          const searchText = `${firstname} ${lastname} ${email}`.toLowerCase();
+          return searchText.includes(query.toLowerCase());
+        })
+        .slice(0, 10)
+        .map(contact => ({
+          id: contact.vid,
+          properties: {
+            firstname: contact.properties.firstname?.value || '',
+            lastname: contact.properties.lastname?.value || '',
+            email: contact.properties.email?.value || ''
+          }
+        }));
+
+      return res.status(200).json({ 
+        results: filteredContacts 
+      });
     }
+    
     // Owner search
     else if (action === 'search_owners') {
       hubspotUrl = `https://api.hubapi.com/crm/v3/owners?hapikey=${HUBSPOT_API_KEY}&limit=100`;
-      searchBody = null;
+      
+      response = await fetch(hubspotUrl, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('HubSpot API error:', response.status, errorText);
+        return res.status(response.status).json({ 
+          error: 'HubSpot API error',
+          details: errorText,
+          status: response.status
+        });
+      }
+
+      const data = await response.json();
+      
+      // Filter owners by query
+      const filteredOwners = data.results
+        .filter(owner => {
+          const name = `${owner.firstName || ''} ${owner.lastName || ''}`.toLowerCase();
+          return name.includes(query.toLowerCase());
+        })
+        .slice(0, 10);
+
+      return res.status(200).json({ 
+        results: filteredOwners 
+      });
     }
     else {
       return res.status(400).json({ error: 'Invalid action' });
     }
-
-    // Make request to HubSpot
-    const response = await fetch(hubspotUrl, {
-      method: action === 'search_owners' ? 'GET' : 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: searchBody ? JSON.stringify(searchBody) : undefined
-    });
-
-    // Check if request was successful
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('HubSpot API error:', response.status, errorText);
-      return res.status(response.status).json({ 
-        error: 'HubSpot API error',
-        details: errorText 
-      });
-    }
-
-    const data = await response.json();
-
-    // Return results
-    return res.status(200).json(data);
 
   } catch (error) {
     console.error('Search error:', error);
