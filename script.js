@@ -1,6 +1,6 @@
 // Configuration
 const CONFIG = {
-    PIPEDREAM_WEBHOOK_URL: 'https://hubspot-deal-proxy.vercel.app/api/search', // We'll update this in Phase 3
+    API_URL: '/api/search',
     MIN_SEARCH_LENGTH: 2,
     SEARCH_DELAY: 300 // ms
 };
@@ -267,7 +267,7 @@ async function searchItems(type, query, fieldId = null) {
         resultsDiv.innerHTML = '<div class="loading">Searching...</div>';
         resultsDiv.style.display = 'block';
 
-        const response = await fetch(CONFIG.PIPEDREAM_WEBHOOK_URL, {
+        const response = await fetch(CONFIG.API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -719,8 +719,8 @@ async function handleSubmit(e) {
             }
         };
 
-        // Send to Pipedream webhook
-        const response = await fetch(CONFIG.PIPEDREAM_WEBHOOK_URL, {
+        // Send to webhook
+        const response = await fetch(CONFIG.API_URL, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
