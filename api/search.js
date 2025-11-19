@@ -1,5 +1,6 @@
 // api/search.js
 
+// Helper: get a fresh HubSpot access token using the refresh token
 async function getHubSpotAccessToken() {
   const clientId = process.env.HUBSPOT_CLIENT_ID;
   const clientSecret = process.env.HUBSPOT_CLIENT_SECRET;
@@ -36,6 +37,7 @@ async function getHubSpotAccessToken() {
 }
 
 export default async function handler(req, res) {
+  // CORS
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "POST, OPTIONS");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type");
@@ -88,7 +90,11 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("HubSpot companies search error:", response.status, errorText);
+        console.error(
+          "HubSpot companies search error:",
+          response.status,
+          errorText
+        );
         return res.status(response.status).json({
           error: "HubSpot API error",
           details: errorText,
@@ -143,7 +149,11 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("HubSpot contacts search error:", response.status, errorText);
+        console.error(
+          "HubSpot contacts search error:",
+          response.status,
+          errorText
+        );
         return res.status(response.status).json({
           error: "HubSpot API error",
           details: errorText,
@@ -164,7 +174,7 @@ export default async function handler(req, res) {
       return res.status(200).json({ results });
     }
 
-    // ========= OWNER SEARCH (same as before) =========
+    // ========= OWNER SEARCH (filtered) =========
     if (action === "search_owners") {
       hubspotUrl = "https://api.hubapi.com/crm/v3/owners?limit=100";
 
@@ -178,7 +188,11 @@ export default async function handler(req, res) {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("HubSpot owners API error:", response.status, errorText);
+        console.error(
+          "HubSpot owners API error:",
+          response.status,
+          errorText
+        );
         return res.status(response.status).json({
           error: "HubSpot API error",
           details: errorText,
@@ -188,17 +202,30 @@ export default async function handler(req, res) {
 
       const data = await response.json();
 
+      const q = (query || "").toLowerCase();
+
       const results =
-        (data.results || []).map((owner) => ({
-          id: owner.id,
-          firstname: owner.firstName || "",
-          lastname: owner.lastName || "",
-          email: owner.email || "",
-        })) || [];
+        (data.results || [])
+          .filter((owner) => {
+            const fullName = `${owner.firstName || ""} ${
+              owner.lastName || ""
+            }`.toLowerCase();
+            const email = (owner.email || "").toLowerCase();
+            const searchText = `${fullName} ${email}`;
+            return q ? searchText.includes(q) : true;
+          })
+          .slice(0, 10)
+          .map((owner) => ({
+            id: owner.id,
+            firstname: owner.firstName || "",
+            lastname: owner.lastName || "",
+            email: owner.email || "",
+          })) || [];
 
       return res.status(200).json({ results });
     }
 
+    // Unknown action
     return res.status(400).json({ error: "Invalid action" });
   } catch (error) {
     console.error("Search error:", error);
