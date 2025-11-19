@@ -59,6 +59,7 @@ form {
 
 .form-group {
     position: relative;
+    padding-bottom: 8px; /* creates clean spacing */
 }
 
 .form-row {
@@ -123,6 +124,7 @@ textarea {
 
 /* Autocomplete Results */
 .autocomplete-results {
+    margin-top: 4px; /* small visual gap below input box */
     position: absolute;
     top: 100%;
     left: 0;
