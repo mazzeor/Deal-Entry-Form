@@ -61,11 +61,14 @@ export default async function handler(req, res) {
     let hubspotUrl;
     let response;
 
-    // ========= COMPANY SEARCH (v3, substring) =========
+    // ========= COMPANY SEARCH (v3, token match) =========
     if (action === "search_companies") {
       hubspotUrl = "https://api.hubapi.com/crm/v3/objects/companies/search";
 
-      const searchValue = (query || "").trim();
+      // use first word as token
+      const raw = (query || "").trim();
+      const parts = raw.split(/\s+/);
+      const searchValue = parts[0] || raw;
 
       response = await fetch(hubspotUrl, {
         method: "POST",
@@ -79,7 +82,7 @@ export default async function handler(req, res) {
               filters: [
                 {
                   propertyName: "name",
-                  operator: "CONTAINS", // substring match
+                  operator: "CONTAINS_TOKEN", // valid operator
                   value: searchValue,
                 },
               ],
@@ -122,13 +125,14 @@ export default async function handler(req, res) {
       return res.status(200).json({ results });
     }
 
-    // ========= CONTACT SEARCH (v3, name + email, last word) =========
+    // ========= CONTACT SEARCH (v3, name + email, first word) =========
     if (action === "search_contacts") {
       hubspotUrl = "https://api.hubapi.com/crm/v3/objects/contacts/search";
 
+      // take the FIRST word so "Jason Bla" still searches "Jason"
       const raw = (query || "").trim();
       const parts = raw.split(/\s+/);
-      const searchValue = parts[parts.length - 1] || raw; // last word
+      const searchValue = parts[0] || raw;
 
       response = await fetch(hubspotUrl, {
         method: "POST",
@@ -139,31 +143,31 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           filterGroups: [
             {
-              // firstname contains last word
+              // firstname == token
               filters: [
                 {
                   propertyName: "firstname",
-                  operator: "CONTAINS",
+                  operator: "CONTAINS_TOKEN",
                   value: searchValue,
                 },
               ],
             },
             {
-              // lastname contains last word
+              // lastname == token
               filters: [
                 {
                   propertyName: "lastname",
-                  operator: "CONTAINS",
+                  operator: "CONTAINS_TOKEN",
                   value: searchValue,
                 },
               ],
             },
             {
-              // email contains last word or fragment
+              // email contains that token (e.g. "jason")
               filters: [
                 {
                   propertyName: "email",
-                  operator: "CONTAINS",
+                  operator: "CONTAINS_TOKEN",
                   value: searchValue,
                 },
               ],
@@ -220,7 +224,7 @@ export default async function handler(req, res) {
           response.status,
           errorText
         );
-      return res.status(response.status).json({
+        return res.status(response.status).json({
           error: "HubSpot API error",
           details: errorText,
           status: response.status,
