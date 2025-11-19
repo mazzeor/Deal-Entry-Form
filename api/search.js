@@ -61,9 +61,11 @@ export default async function handler(req, res) {
     let hubspotUrl;
     let response;
 
-    // ========= COMPANY SEARCH (v3) =========
+    // ========= COMPANY SEARCH (v3, substring) =========
     if (action === "search_companies") {
       hubspotUrl = "https://api.hubapi.com/crm/v3/objects/companies/search";
+
+      const searchValue = (query || "").trim();
 
       response = await fetch(hubspotUrl, {
         method: "POST",
@@ -77,8 +79,8 @@ export default async function handler(req, res) {
               filters: [
                 {
                   propertyName: "name",
-                  operator: "CONTAINS_TOKEN",
-                  value: query || "",
+                  operator: "CONTAINS", // substring match
+                  value: searchValue,
                 },
               ],
             },
@@ -120,9 +122,13 @@ export default async function handler(req, res) {
       return res.status(200).json({ results });
     }
 
-    // ========= CONTACT SEARCH (v3) =========
+    // ========= CONTACT SEARCH (v3, name + email, last word) =========
     if (action === "search_contacts") {
       hubspotUrl = "https://api.hubapi.com/crm/v3/objects/contacts/search";
+
+      const raw = (query || "").trim();
+      const parts = raw.split(/\s+/);
+      const searchValue = parts[parts.length - 1] || raw; // last word
 
       response = await fetch(hubspotUrl, {
         method: "POST",
@@ -133,11 +139,32 @@ export default async function handler(req, res) {
         body: JSON.stringify({
           filterGroups: [
             {
+              // firstname contains last word
+              filters: [
+                {
+                  propertyName: "firstname",
+                  operator: "CONTAINS",
+                  value: searchValue,
+                },
+              ],
+            },
+            {
+              // lastname contains last word
+              filters: [
+                {
+                  propertyName: "lastname",
+                  operator: "CONTAINS",
+                  value: searchValue,
+                },
+              ],
+            },
+            {
+              // email contains last word or fragment
               filters: [
                 {
                   propertyName: "email",
-                  operator: "CONTAINS_TOKEN",
-                  value: query || "",
+                  operator: "CONTAINS",
+                  value: searchValue,
                 },
               ],
             },
@@ -193,7 +220,7 @@ export default async function handler(req, res) {
           response.status,
           errorText
         );
-        return res.status(response.status).json({
+      return res.status(response.status).json({
           error: "HubSpot API error",
           details: errorText,
           status: response.status,
