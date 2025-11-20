@@ -59,7 +59,7 @@ form {
 
 .form-group {
     position: relative;
-    padding-bottom: 8px; /* creates clean spacing */
+    padding-bottom: 8px; /* Added to give space for dropdown */
 }
 
 .form-row {
@@ -124,11 +124,11 @@ textarea {
 
 /* Autocomplete Results */
 .autocomplete-results {
-    margin-top: 4px; /* small visual gap below input box */
     position: absolute;
     top: 100%;
     left: 0;
     right: 0;
+    margin-top: 4px; /* Small visual gap below the input */
     background: white;
     border: 1px solid #ddd;
     border-top: none;
@@ -285,7 +285,9 @@ button {
     form {
         padding: 20px;
     }
-}/* Additional styles for new fields */
+}
+
+/* Additional styles for new fields */
 
 .btn-link {
     background: none;
@@ -345,10 +347,12 @@ select[multiple] option:checked {
     font-style: italic;
     color: #8899a6;
 }
+
 .form-section.no-border {
     border-bottom: none;
     padding-bottom: 1px;  /* Reduced from 30px */
 }
+
 .form-section.with-top-border {
     border-top: 1px solid #c1c8cd;
     padding-top: 30px;
@@ -369,6 +373,8 @@ select[multiple] option:checked {
     color: #c0103e;
     text-decoration: underline;
 }
+
+/* Final btn-link override to match your brand blue */
 .btn-link {
     background: none;
     border: none;
@@ -379,8 +385,8 @@ select[multiple] option:checked {
     padding: 8px 0;
     margin-top: 5px;
     text-decoration: none;
-    display: block;  /* ADD THIS LINE */
-    width: fit-content;  /* ADD THIS LINE */
+    display: block;
+    width: fit-content;
 }
 
 .btn-link:hover {
